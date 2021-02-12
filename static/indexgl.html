@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Add hillshading</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+<link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.css" rel="stylesheet" />
+<style>
+	body { margin: 0; padding: 0; }
+	#map { position: absolute; top: 0; bottom: 0; width: 100%; };
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+
+    var style = {
+        "version": 8,
+        "name": "ICGC",
+        "metadata": {},
+        "center": [
+            2.049758655979531,
+            41.391690737665726
+        ],
+        "zoom": 11,
+        "bearing": 0,
+        "pitch": 0,
+        "sprite": "https://betaserver.icgc.cat/vectortiles/sprites/sprite",
+        "glyphs": "https://geoserveis.icgc.cat/contextmaps/glyphs/{fontstack}/{range}.pbf",
+        "sources": {
+            "openmaptiles": {
+                "type": "vector",
+                "url": "https://geoserveis.icgc.cat/contextmaps/basemap.json"
+            },
+        },
+        "layers": [
+            {
+                "id": "background",
+                "type": "background",
+                "paint": {
+                    "background-color": "rgba(248,246,243,1)"
+                }
+            },
+            {
+                "id": "boundary-land-level-4",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "boundary",
+                "filter": [
+                    "all",
+                    [
+                        "in",
+                        "admin_level",
+                        4,
+                        6,
+                        8,
+                        7
+                    ],
+                    [
+                        "!=",
+                        "maritime",
+                        1
+                    ]
+                ],
+                "layout": {
+                    "line-join": "round"
+                },
+                "paint": {
+                    "line-color": "rgba(214,208,208,1)",
+                    "line-dasharray": [
+                        3,
+                        1,
+                        1,
+                        1
+                    ],
+                    "line-width": {
+                        "base": 1.4,
+                        "stops": [
+                            [
+                                4,
+                                0.4
+                            ],
+                            [
+                                5,
+                                1
+                            ],
+                            [
+                                12,
+                                3
+                            ]
+                        ]
+                    }
+                }
+            },
+            {
+                "id": "boundary-land-level-2",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "boundary",
+                "filter": [
+                    "all",
+                    [
+                        "==",
+                        "admin_level",
+                        2
+                    ],
+                    [
+                        "!=",
+                        "maritime",
+                        1
+                    ],
+                    [
+                        "!=",
+                        "disputed",
+                        1
+                    ]
+                ],
+                "layout": {
+                    "line-cap": "round",
+                    "line-join": "round"
+                },
+                "paint": {
+                    "line-color": "rgba(214,208,208,1)",
+                    "line-width": {
+                        "base": 1,
+                        "stops": [
+                            [
+                                0,
+                                0.6
+                            ],
+                            [
+                                4,
+                                1.4
+                            ],
+                            [
+                                5,
+                                2
+                            ],
+                            [
+                                12,
+                                8
+                            ]
+                        ]
+                    }
+                }
+            }
+        ]
+    };
+
+    //var style = 'https://betaserver.icgc.cat/vectortiles/styles/estil_mapa_base.json';
+
+	var map = new mapboxgl.Map({
+        container: 'map',
+        style: style,
+        center: [0.6324, 41.9767],
+        zoom: 12,
+        hash: true
+    });
+
+    map.on('load', function() {
+        /*
+        map.addSource('dem', {
+            'type': 'raster-dem',
+            "tileSize": 256,
+            'tiles': ['http://localhost:3024/api/services/terreny/{z}/{x}/{y}.png'],
+            "maxzoom": 15,
+            "minZoom": 7.5,
+            "encoding": "terrarium"
+        });
+        map.addLayer(
+            {
+                'id': 'hillshading',
+                'source': 'dem',
+                'type': 'hillshade',
+                "paint": {
+                    "hillshade-illumination-anchor": "viewport",
+                    "hillshade-exaggeration": 1,
+                    "hillshade-highlight-color": "rgba(255,129,109,1)",
+                    "hillshade-shadow-color": "rgba(143,0,0,1)",
+                    "hillshade-accent-color": "rgba(230,44,44,1)",
+                    "hillshade-illumination-direction": 315
+                }
+                // insert below waterway-river-canal-shadow;
+                // where hillshading sits in the Mapbox Outdoors style
+			},
+			'boundary-land-level-4'
+        );*/
+
+        //'tiles': ['http://localhost:3024/api/services/terreny/{z}/{x}/{y}.png'],
+        //'tiles': ['https://tilemaps.icgc.cat/tileserver/tileserver.php/terrarium_4/{z}/{x}/{y}.png'],
+        //'tiles': ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],
+
+        map.addSource('dem', {
+            'type': 'raster-dem',
+            "tileSize": 256,
+            'tiles': ['http://localhost:3000/api/services/terreny/{z}/{x}/{y}.png'],
+            "maxzoom": 15,
+            "minZoom": 7.5,
+            "encoding": "terrarium"
+        });
+        map.addLayer(
+            {
+                'id': 'hillshading',
+                'source': 'dem',
+                'type': 'hillshade',
+                "paint": {
+                    "hillshade-illumination-anchor": "viewport",
+                    "hillshade-exaggeration": 1,
+                    "hillshade-highlight-color": "rgba(255,129,109,1)",
+                    "hillshade-shadow-color": "rgba(143,0,0,1)",
+                    "hillshade-accent-color": "rgba(230,44,44,1)",
+                    "hillshade-illumination-direction": 315
+                }
+                // insert below waterway-river-canal-shadow;
+                // where hillshading sits in the Mapbox Outdoors style
+			},
+			'boundary-land-level-4'
+        );
+        
+        /*
+        map.addSource('mascara', {
+            "type": "raster",
+            'tiles': ['http://imtilemapsdev.icgc.local/tileserver/tileserver.php/contorn_cat_negre/{z}/{x}/{y}.png'],
+            "maxzoom": 15,
+            "minZoom": 7.5,
+            "tileSize": 256
+        });
+
+        map.addLayer(
+            {
+                'id': 'mascara-id',
+                'source': 'mascara',
+                'type': 'raster',
+                "paint": {
+                    "raster-opacity": 0.2,
+                }
+                // insert below waterway-river-canal-shadow;
+                // where hillshading sits in the Mapbox Outdoors style
+			},
+			'boundary-land-level-4'
+        );
+        */
+        
+    });
+</script>
+
+</body>
+</html>
